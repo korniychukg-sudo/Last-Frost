@@ -1,0 +1,389 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		LFB00000000000000003001 /* AlmanacViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001001 /* AlmanacViews.swift */; };
+		LFB00000000000000003002 /* BedViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001002 /* BedViews.swift */; };
+		LFB00000000000000003003 /* BookData.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001003 /* BookData.swift */; };
+		LFB00000000000000003004 /* BookViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001004 /* BookViews.swift */; };
+		LFB00000000000000003005 /* CropDataA.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001005 /* CropDataA.swift */; };
+		LFB00000000000000003006 /* CropDataB.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001006 /* CropDataB.swift */; };
+		LFB00000000000000003007 /* CropDataC.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001007 /* CropDataC.swift */; };
+		LFB00000000000000003008 /* CropModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001008 /* CropModel.swift */; };
+		LFB00000000000000003009 /* FrostCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001009 /* FrostCalendar.swift */; };
+		LFB00000000000000003010 /* FrostComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001010 /* FrostComponents.swift */; };
+		LFB00000000000000003011 /* FrostIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001011 /* FrostIcons.swift */; };
+		LFB00000000000000003012 /* FrostNotes.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001012 /* FrostNotes.swift */; };
+		LFB00000000000000003013 /* FrostRoot.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001013 /* FrostRoot.swift */; };
+		LFB00000000000000003014 /* FrostStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001014 /* FrostStore.swift */; };
+		LFB00000000000000003015 /* FrostTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001015 /* FrostTheme.swift */; };
+		LFB00000000000000003016 /* GlossaryData.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001016 /* GlossaryData.swift */; };
+		LFB00000000000000003017 /* LarderViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001017 /* LarderViews.swift */; };
+		LFB00000000000000003018 /* LastFrostApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001018 /* LastFrostApp.swift */; };
+		LFB00000000000000003019 /* PlantArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001019 /* PlantArt.swift */; };
+		LFB00000000000000003020 /* PlotModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001020 /* PlotModel.swift */; };
+		LFB00000000000000003021 /* PlotViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001021 /* PlotViews.swift */; };
+		LFB00000000000000003022 /* SceneArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001022 /* SceneArt.swift */; };
+		LFB00000000000000003023 /* SettingsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001023 /* SettingsViews.swift */; };
+		LFB00000000000000003024 /* TodayViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001024 /* TodayViews.swift */; };
+		LFB00000000000000040001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000020001 /* Assets.xcassets */; };
+		LFB00000000000000040002 /* Art in Resources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000020002 /* Art */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		LFA00000000000000001001 /* AlmanacViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlmanacViews.swift; sourceTree = "<group>"; };
+		LFA00000000000000001002 /* BedViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BedViews.swift; sourceTree = "<group>"; };
+		LFA00000000000000001003 /* BookData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookData.swift; sourceTree = "<group>"; };
+		LFA00000000000000001004 /* BookViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookViews.swift; sourceTree = "<group>"; };
+		LFA00000000000000001005 /* CropDataA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropDataA.swift; sourceTree = "<group>"; };
+		LFA00000000000000001006 /* CropDataB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropDataB.swift; sourceTree = "<group>"; };
+		LFA00000000000000001007 /* CropDataC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropDataC.swift; sourceTree = "<group>"; };
+		LFA00000000000000001008 /* CropModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropModel.swift; sourceTree = "<group>"; };
+		LFA00000000000000001009 /* FrostCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrostCalendar.swift; sourceTree = "<group>"; };
+		LFA00000000000000001010 /* FrostComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrostComponents.swift; sourceTree = "<group>"; };
+		LFA00000000000000001011 /* FrostIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrostIcons.swift; sourceTree = "<group>"; };
+		LFA00000000000000001012 /* FrostNotes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrostNotes.swift; sourceTree = "<group>"; };
+		LFA00000000000000001013 /* FrostRoot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrostRoot.swift; sourceTree = "<group>"; };
+		LFA00000000000000001014 /* FrostStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrostStore.swift; sourceTree = "<group>"; };
+		LFA00000000000000001015 /* FrostTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrostTheme.swift; sourceTree = "<group>"; };
+		LFA00000000000000001016 /* GlossaryData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlossaryData.swift; sourceTree = "<group>"; };
+		LFA00000000000000001017 /* LarderViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LarderViews.swift; sourceTree = "<group>"; };
+		LFA00000000000000001018 /* LastFrostApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastFrostApp.swift; sourceTree = "<group>"; };
+		LFA00000000000000001019 /* PlantArt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantArt.swift; sourceTree = "<group>"; };
+		LFA00000000000000001020 /* PlotModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlotModel.swift; sourceTree = "<group>"; };
+		LFA00000000000000001021 /* PlotViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlotViews.swift; sourceTree = "<group>"; };
+		LFA00000000000000001022 /* SceneArt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneArt.swift; sourceTree = "<group>"; };
+		LFA00000000000000001023 /* SettingsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViews.swift; sourceTree = "<group>"; };
+		LFA00000000000000001024 /* TodayViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViews.swift; sourceTree = "<group>"; };
+		LFA00000000000000020001 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		LFA00000000000000020002 /* Art */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Art; sourceTree = "<group>"; };
+		LFA00000000000000020090 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		LFA00000000000000020099 /* Last Frost.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Last Frost.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		LFC00000000000000050001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		LFD00000000000000060001 = {
+			isa = PBXGroup;
+			children = (
+				LFA00000000000000001001 /* AlmanacViews.swift */,
+				LFA00000000000000001002 /* BedViews.swift */,
+				LFA00000000000000001003 /* BookData.swift */,
+				LFA00000000000000001004 /* BookViews.swift */,
+				LFA00000000000000001005 /* CropDataA.swift */,
+				LFA00000000000000001006 /* CropDataB.swift */,
+				LFA00000000000000001007 /* CropDataC.swift */,
+				LFA00000000000000001008 /* CropModel.swift */,
+				LFA00000000000000001009 /* FrostCalendar.swift */,
+				LFA00000000000000001010 /* FrostComponents.swift */,
+				LFA00000000000000001011 /* FrostIcons.swift */,
+				LFA00000000000000001012 /* FrostNotes.swift */,
+				LFA00000000000000001013 /* FrostRoot.swift */,
+				LFA00000000000000001014 /* FrostStore.swift */,
+				LFA00000000000000001015 /* FrostTheme.swift */,
+				LFA00000000000000001016 /* GlossaryData.swift */,
+				LFA00000000000000001017 /* LarderViews.swift */,
+				LFA00000000000000001018 /* LastFrostApp.swift */,
+				LFA00000000000000001019 /* PlantArt.swift */,
+				LFA00000000000000001020 /* PlotModel.swift */,
+				LFA00000000000000001021 /* PlotViews.swift */,
+				LFA00000000000000001022 /* SceneArt.swift */,
+				LFA00000000000000001023 /* SettingsViews.swift */,
+				LFA00000000000000001024 /* TodayViews.swift */,
+				LFA00000000000000020001 /* Assets.xcassets */,
+				LFA00000000000000020002 /* Art */,
+				LFA00000000000000020090 /* Info.plist */,
+			);
+			path = "Last Frost";
+			sourceTree = "<group>";
+		};
+		LFD00000000000000060003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				LFA00000000000000020099 /* Last Frost.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		LFE00000000000000070001 /* Last Frost */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = LFF00000000000000080001 /* Build configuration list for PBXNativeTarget "Last Frost" */;
+			buildPhases = (
+				LFG00000000000000090001 /* Sources */,
+				LFC00000000000000050001 /* Frameworks */,
+				LFG00000000000000090002 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Last Frost";
+			productName = "Last Frost";
+			productReference = LFA00000000000000020099 /* Last Frost.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		LFG00000000000000095001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					LFE00000000000000070001 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = LFF00000000000000080002 /* Build configuration list for PBXProject "Last Frost" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = LFD00000000000000060001;
+			productRefGroup = LFD00000000000000060003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				LFE00000000000000070001 /* Last Frost */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		LFG00000000000000090002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				LFB00000000000000040001 /* Assets.xcassets in Resources */,
+				LFB00000000000000040002 /* Art in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		LFG00000000000000090001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				LFB00000000000000003001 /* AlmanacViews.swift in Sources */,
+				LFB00000000000000003002 /* BedViews.swift in Sources */,
+				LFB00000000000000003003 /* BookData.swift in Sources */,
+				LFB00000000000000003004 /* BookViews.swift in Sources */,
+				LFB00000000000000003005 /* CropDataA.swift in Sources */,
+				LFB00000000000000003006 /* CropDataB.swift in Sources */,
+				LFB00000000000000003007 /* CropDataC.swift in Sources */,
+				LFB00000000000000003008 /* CropModel.swift in Sources */,
+				LFB00000000000000003009 /* FrostCalendar.swift in Sources */,
+				LFB00000000000000003010 /* FrostComponents.swift in Sources */,
+				LFB00000000000000003011 /* FrostIcons.swift in Sources */,
+				LFB00000000000000003012 /* FrostNotes.swift in Sources */,
+				LFB00000000000000003013 /* FrostRoot.swift in Sources */,
+				LFB00000000000000003014 /* FrostStore.swift in Sources */,
+				LFB00000000000000003015 /* FrostTheme.swift in Sources */,
+				LFB00000000000000003016 /* GlossaryData.swift in Sources */,
+				LFB00000000000000003017 /* LarderViews.swift in Sources */,
+				LFB00000000000000003018 /* LastFrostApp.swift in Sources */,
+				LFB00000000000000003019 /* PlantArt.swift in Sources */,
+				LFB00000000000000003020 /* PlotModel.swift in Sources */,
+				LFB00000000000000003021 /* PlotViews.swift in Sources */,
+				LFB00000000000000003022 /* SceneArt.swift in Sources */,
+				LFB00000000000000003023 /* SettingsViews.swift in Sources */,
+				LFB00000000000000003024 /* TodayViews.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		LFF00000000000000080101 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		LFF00000000000000080102 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		LFF00000000000000080103 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Last Frost/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lastfrost.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		LFF00000000000000080104 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Last Frost/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lastfrost.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		LFF00000000000000080001 /* Build configuration list for PBXNativeTarget "Last Frost" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				LFF00000000000000080103 /* Debug */,
+				LFF00000000000000080104 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		LFF00000000000000080002 /* Build configuration list for PBXProject "Last Frost" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				LFF00000000000000080101 /* Debug */,
+				LFF00000000000000080102 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = LFG00000000000000095001 /* Project object */;
+}
