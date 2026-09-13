@@ -62,11 +62,28 @@ struct PlotScene: View {
     var dates: FrostDates
     var rain: Double
     var backdrop: String? = nil
+    var time: Double = 0
 
     var body: some View {
         Canvas { ctx, size in
-            var drawer = SceneDrawer(ctx: ctx, size: size, hour: hour, day: day, beds: beds, dates: dates, rain: rain, backdrop: backdrop)
+            var drawer = SceneDrawer(ctx: ctx, size: size, hour: hour, day: day, beds: beds, dates: dates, rain: rain, backdrop: backdrop, time: time)
             drawer.draw()
+        }
+    }
+}
+
+struct LivingScene: View {
+    var day: Int
+    var beds: [Bed]
+    var dates: FrostDates
+    var backdrop: String? = nil
+
+    var body: some View {
+        TimelineView(.animation(minimumInterval: 1.0 / 24.0)) { timeline in
+            let t = timeline.date.timeIntervalSinceReferenceDate
+            let hour = Almanac.hourNow(timeline.date)
+            PlotScene(hour: hour, day: day, beds: beds, dates: dates,
+                      rain: (t * 0.42).truncatingRemainder(dividingBy: 1), backdrop: backdrop, time: t)
         }
     }
 }
@@ -80,6 +97,7 @@ struct SceneDrawer {
     let dates: FrostDates
     let rain: Double
     let backdrop: String?
+    var time: Double = 0
 
     var w: CGFloat { size.width }
     var h: CGFloat { size.height }
@@ -135,7 +153,21 @@ struct SceneDrawer {
         }
         drawBeds()
         drawWeather()
+        drawLife()
         drawNight()
+    }
+
+    var lampLevel: Double {
+        let base = tone.lamp
+        guard base > 0.02 else { return 0 }
+        let h = hour.truncatingRemainder(dividingBy: 24)
+        var level = base
+        if h >= 17.0 && h <= 20.5 {
+            let ramp = max(0, min(1, (h - 17.0) / 2.0))
+            let flick = 0.72 + 0.28 * abs(sin(time * 9.1) * sin(time * 2.3 + 1.7) + 0.4 * sin(time * 23.7))
+            level = base * (0.35 + 0.65 * ramp) * (ramp < 0.9 ? flick : 1)
+        }
+        return max(0, min(1, level))
     }
 
     mutating func drawSky() {
@@ -245,7 +277,7 @@ struct SceneDrawer {
         let doorRect = CGRect(x: x0 + (x1 - x0) * 0.12, y: eave + (bottom - eave) * 0.30, width: (x1 - x0) * 0.22, height: (bottom - eave) * 0.70)
         ctx.fill(Path(doorRect), with: .color(lit(Color(red: 0.22, green: 0.16, blue: 0.11))))
         let winRect = CGRect(x: x0 + (x1 - x0) * 0.44, y: eave + (bottom - eave) * 0.28, width: (x1 - x0) * 0.18, height: (bottom - eave) * 0.26)
-        let lampGlow = tone.lamp
+        let lampGlow = lampLevel
         let glass = Color.blend(Color.blend(tone.top, Color(red: 0.55, green: 0.62, blue: 0.68), 0.5),
                                 Color(red: 1.0, green: 0.80, blue: 0.45), lampGlow)
         ctx.fill(Path(winRect), with: .color(glass))

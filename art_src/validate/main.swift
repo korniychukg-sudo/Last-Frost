@@ -343,17 +343,135 @@ for lesson in Lessons.all {
     expect(words >= 250 && words <= 520, "lesson \(lesson.key) has \(words) words")
     if !artDir.isEmpty { expect(FileManager.default.fileExists(atPath: artDir + "/" + lesson.plate + ".jpg"), "lesson plate missing \(lesson.key)") }
 }
-expect(Glossary.terms.count == 45, "glossary does not hold 45 terms (\(Glossary.terms.count))")
+expect(Glossary.terms.count == 60, "glossary does not hold 60 terms (\(Glossary.terms.count))")
 expect(Set(Glossary.terms.map { $0.term }).count == Glossary.terms.count, "glossary terms repeat")
 for t in Glossary.terms { expect(t.means.split(separator: " ").count >= 12, "term \(t.term) is thin") }
-expect(Badge.all.count == 6 && Set(Badge.all.map { $0.key }).count == 6, "badges")
+expect(Badge.all.count == 12 && Set(Badge.all.map { $0.key }).count == 12, "badges")
+expect(Lessons.all.count == 17, "lessons are not 17 (\(Lessons.all.count))")
+for key in ["pests", "frostcover", "watering", "seedkeeping"] { expect(Lessons.all.contains { $0.key == key }, "new lesson \(key) missing") }
 expect(Ladder.steps.count == 5 && Ladder.index(for: 0) == 0 && Ladder.index(for: 5000) == 4, "ladder")
 if !artDir.isEmpty {
     for s in ["wi", "sp", "su", "au"] { for h in 0..<7 { expect(FileManager.default.fileExists(atPath: artDir + "/pl_\(s)\(h).jpg"), "scene plate missing pl_\(s)\(h)") } }
     for k in 0..<4 { expect(FileManager.default.fileExists(atPath: artDir + "/se_\(k).jpg"), "season plate missing"); expect(FileManager.default.fileExists(atPath: artDir + "/ob_p\(k).jpg"), "onboarding plate missing") }
     for k in 0..<6 { expect(FileManager.default.fileExists(atPath: artDir + "/sh_\(k).jpg"), "shelf plate missing") }
+    for k in 0..<4 { expect(FileManager.default.fileExists(atPath: artDir + "/ty_\(k).jpg"), "tray plate missing ty_\(k)") }
+    for m in 1...12 { expect(FileManager.default.fileExists(atPath: artDir + "/mo_\(m).jpg"), "month plate missing mo_\(m)") }
+    for crop in Register.crops { expect(FileManager.default.fileExists(atPath: artDir + "/pr_" + crop.key + ".jpg"), "produce plate missing for \(crop.key)") }
 }
+
+print("== troubles ==")
+expect(Troubles.all.count == 24, "troubles are not 24 (\(Troubles.all.count))")
+expect(Set(Troubles.all.map { $0.key }).count == Troubles.all.count, "trouble keys repeat")
+expect(Set(Troubles.all.map { $0.name }).count == Troubles.all.count, "trouble names repeat")
+for t in Troubles.all {
+    expect(t.signs.split(separator: " ").count >= 40 && t.signs.split(separator: " ").count <= 90, "trouble \(t.key) signs length \(t.signs.split(separator: " ").count)")
+    expect(t.action.split(separator: " ").count >= 35 && t.action.split(separator: " ").count <= 90, "trouble \(t.key) action length \(t.action.split(separator: " ").count)")
+    expect(t.prevention.split(separator: " ").count >= 30 && t.prevention.split(separator: " ").count <= 80, "trouble \(t.key) prevention length \(t.prevention.split(separator: " ").count)")
+    expect(!t.crops.isEmpty && t.crops.count <= 16, "trouble \(t.key) crop list size")
+    for c in t.crops { expect(Register.exists(c), "trouble \(t.key) names unknown crop \(c)") }
+    expect(Set(t.crops).count == t.crops.count, "trouble \(t.key) repeats a crop")
+    expect(t.monthFrom >= 1 && t.monthFrom <= 12 && t.monthTo >= 1 && t.monthTo <= 12, "trouble \(t.key) months")
+    expect(!t.monthList.isEmpty && t.monthList.count <= 12, "trouble \(t.key) month list")
+    expect(!t.symptomWords.isEmpty && !t.season.isEmpty && !t.remedy.instruction.isEmpty, "trouble \(t.key) text")
+    expect(t.count >= 3 && t.count <= 8, "trouble \(t.key) count")
+    if !artDir.isEmpty { expect(FileManager.default.fileExists(atPath: artDir + "/" + t.plate + ".jpg"), "trouble plate missing \(t.key)") }
+}
+for crop in Register.crops {
+    expect(!Troubles.affecting(crop.key).isEmpty, "crop \(crop.key) has no trouble in the register")
+}
+var eventChecks = 0
+var eventDays = 0
+var growingDays = 0
+var sample = PlotBook()
+sample.frost = FrostDates.forZone(6)
+sample.beds = [Bed.make("bed1", name: "North"), Bed.make("bed2", name: "South")]
+for (i, key) in ["tomato", "cabbage", "carrot", "lettuce", "zucchini", "onion", "bushbean", "spinach"].enumerated() {
+    sample.beds[i / 4].cells[i % 4].planting = Planting(crop: key, sowDay: 900, method: 0, seeds: 4, spacing: 100, thinned: true, rotation: 0, companions: 0, antagonists: 0, watered: nil)
+}
+for d in 905..<1600 {
+    let growing = sample.beds.contains { bed in bed.cells.contains { cell in
+        guard let p = cell.planting else { return false }
+        let st = p.stage(on: d)
+        return st >= .sprout && st <= .mature } }
+    if growing { growingDays += 1 }
+    let e = Troubles.event(for: d, book: sample)
+    if !growing { expect(e == nil, "event on a day with nothing growing") }
+    let again = Troubles.event(for: d, book: sample)
+    expect(e == again, "trouble event not reproducible on day \(d)")
+    if let ev = e {
+        eventDays += 1
+        expect(ev.candidates.count == 3 && Set(ev.candidates).count == 3, "event candidates malformed")
+        expect(ev.candidates.contains(ev.trouble), "event candidates omit the culprit")
+        expect(Troubles.exists(ev.trouble), "event names unknown trouble")
+        expect(sample.beds.contains { $0.id == ev.bedId }, "event names unknown bed")
+        let bed = sample.beds.first { $0.id == ev.bedId }!
+        expect(ev.cell < bed.cells.count && bed.cells[ev.cell].planting?.crop == ev.crop, "event cell does not hold its crop")
+        let stage = bed.cells[ev.cell].planting!.stage(on: d)
+        expect(stage >= .sprout && stage <= .mature, "event on a bare or spent square")
+        let culprit = Troubles.find(ev.trouble)
+        for c in ev.candidates where c != ev.trouble { expect(Troubles.find(c).symptom != culprit.symptom, "decoy shares the culprit symptom") }
+        expect(ev.id == "trouble-\(d)", "event id")
+    }
+    eventChecks += 1
+}
+expect(growingDays > 60 && Double(eventDays) >= Double(growingDays) * 0.6 && eventDays < growingDays, "event frequency off (\(eventDays) of \(growingDays) growing days)")
+expect(Troubles.event(for: 1000, book: PlotBook()) == nil, "event on an empty plot")
+print("   \(Troubles.all.count) troubles, \(eventChecks) days checked, \(growingDays) growing, \(eventDays) with an event")
+
+print("== sayings ==")
+expect(Sayings.all.count == 36, "sayings are not 36 (\(Sayings.all.count))")
+expect(Set(Sayings.all.map { $0.text }).count == Sayings.all.count, "sayings repeat")
+for m in 1...12 { expect(Sayings.forMonth(m).count == 3, "month \(m) does not hold 3 sayings") }
+for s in Sayings.all {
+    expect(s.note.split(separator: " ").count >= 35 && s.note.split(separator: " ").count <= 110, "saying note length \(s.text) \(s.note.split(separator: " ").count)")
+    expect(s.text.hasSuffix(".") , "saying without a full stop: \(s.text)")
+}
+for d in 0..<1500 {
+    let s = Sayings.ofDay(d)
+    expect(s == Sayings.ofDay(d), "saying of day not reproducible")
+    expect(s.month == Almanac.parts(of: d).month, "saying of day is not of the month")
+}
+print("   \(Sayings.all.count) sayings checked")
+
+print("== tray growth ==")
+for crop in Register.crops where crop.indoors != nil {
+    let tray = SeedTray(id: "t", crop: crop.key, sowDay: 100, hardenedDay: nil, prickedDay: nil, shelf: nil)
+    expect(tray.seedlingHeight(on: 99) == 0 && tray.seedlingHeight(on: 100) == 0, "tray grows before sowing \(crop.key)")
+    var last = 0.0
+    for d in 100...200 {
+        let h = tray.seedlingHeight(on: d)
+        expect(h >= last && h <= 1, "tray growth not monotone \(crop.key)")
+        last = h
+    }
+    expect(tray.seedlingHeight(on: 400) == 1, "tray never reaches full height \(crop.key)")
+    expect(!tray.canPrick(on: 101) && tray.canPrick(on: 400), "prick-out gate \(crop.key)")
+    var hard = tray
+    hard.hardenedDay = 150
+    expect(hard.hardenDaysDone(on: 150) == 1 && hard.hardenDaysDone(on: 156) == 7 && hard.hardenDaysDone(on: 170) == 7, "harden day count \(crop.key)")
+}
+print("   tray growth checked")
+
+print("== new examination kinds ==")
+var kindCounts = [0, 0, 0, 0]
+for k in 0..<300 {
+    var rng = Furrow(UInt64(k) &* 31 &+ 7)
+    if let q = Examiner.troubleCrop(&rng, k) { kindCounts[0] += 1; expect(q.options.count == 4 && Set(q.options).count == 4 && q.answer < 4 && !q.explanation.isEmpty, "trouble crop question malformed") }
+    if let q = Examiner.troubleAction(&rng, k) { kindCounts[1] += 1; expect(q.options.count == 4 && Set(q.options).count == 4 && q.answer < 4, "trouble action question malformed") }
+    if let q = Examiner.troubleKind(&rng, k) { kindCounts[2] += 1; expect(q.options.count == 3 && q.answer < 3, "trouble kind question malformed") }
+    if let q = Examiner.sayingVerdict(&rng, k) { kindCounts[3] += 1; expect(q.options.count == 3 && q.answer < 3, "saying question malformed") }
+}
+expect(kindCounts.allSatisfy { $0 >= 280 }, "new question kinds fail too often \(kindCounts)")
+print("   \(kindCounts) new-kind questions checked")
 print("   \(Lessons.all.count) lessons, \(Glossary.terms.count) terms, \(Examiner.authoredAll.count) authored questions")
+
+print("== old snapshot still decodes ==")
+let legacy = "{\"frost\":{\"zone\":6,\"lastMonth\":4,\"lastDay\":1,\"firstMonth\":10,\"firstDay\":31},\"beds\":[],\"trays\":[{\"id\":\"t1\",\"crop\":\"tomato\",\"sowDay\":10}],\"larder\":[],\"seasons\":[],\"seasonNumber\":1,\"points\":12,\"streak\":1,\"bestStreak\":1,\"lastDay\":5,\"daysDone\":[5],\"doneJobs\":[],\"notesSolved\":[]}"
+if let old = try? JSONDecoder().decode(PlotBook.self, from: legacy.data(using: .utf8)!) {
+    expect(old.trays.count == 1 && old.trays[0].prickedDay == nil && old.troublesSolved == nil && old.points == 12, "legacy snapshot fields")
+} else {
+    fail("legacy snapshot without the new fields does not decode")
+}
+print("   legacy snapshot decodes")
 
 print("== persistence round trip ==")
 var book = PlotBook()
@@ -362,10 +480,14 @@ book.beds = [Bed.make("bed1", name: "North"), Bed.make("bed2", name: "South")]
 book.beds[0].cells[0].planting = Planting(crop: "tomato", sowDay: today - 40, method: 1, seeds: 1, spacing: 100, thinned: false, rotation: 0, companions: 1, antagonists: 0, watered: nil)
 book.beds[0].history = [["Fabaceae"]]
 book.larder = [LarderEntry(crop: "radish", quality: 2, day: today - 10, bed: "North", season: 1, count: 3)]
-book.trays = [SeedTray(id: "tray-pepper", crop: "pepper", sowDay: today - 30, hardenedDay: nil)]
+book.trays = [SeedTray(id: "tray-pepper", crop: "pepper", sowDay: today - 30, hardenedDay: nil, prickedDay: today - 10, shelf: 1)]
+book.troublesSolved = ["trouble-1"]
+book.sayingsRead = [Sayings.all[0].id]
+book.troublesCount = 1
 book.seasons = [SeasonRecord(number: 1, year: 2025, closedDay: today - 300, harvests: 12, prize: 3, families: ["Solanaceae"], beds: 2, sowings: 20)]
 if let data = try? JSONEncoder().encode(book), let back = try? JSONDecoder().decode(PlotBook.self, from: data) {
     expect(back.beds == book.beds && back.larder == book.larder && back.trays == book.trays && back.seasons == book.seasons && back.frost == book.frost, "snapshot does not round trip")
+    expect(back.troublesSolved == book.troublesSolved && back.sayingsRead == book.sayingsRead && back.troublesCount == 1, "new fields do not round trip")
 } else {
     fail("snapshot does not encode")
 }

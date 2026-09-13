@@ -3,11 +3,11 @@ import SwiftUI
 struct TodayView: View {
     @EnvironmentObject var garden: FrostGarden
     @State private var now = Date()
-    @State private var rainPhase: Double = 0
     @State private var openSettings = false
     @State private var openNote = false
+    @State private var showSayingNote = false
     @State private var pendingJob: Job? = nil
-    private let clock = Timer.publish(every: 0.15, on: .main, in: .common).autoconnect()
+    private let clock = Timer.publish(every: 20, on: .main, in: .common).autoconnect()
 
     private var hour: Double { Almanac.hourNow(now) }
 
@@ -16,6 +16,8 @@ struct TodayView: View {
             Column {
                 sceneCard
                 jobsCard
+                troubleCard
+                sayingCard
                 noteCard
                 standingCard
                 frostCard
@@ -28,7 +30,6 @@ struct TodayView: View {
         .onReceive(clock) { _ in
             now = Date()
             garden.refreshClock()
-            rainPhase = (rainPhase + 0.018).truncatingRemainder(dividingBy: 1)
         }
         .sheet(isPresented: $openSettings) {
             SettingsView { openSettings = false }.environmentObject(garden)
@@ -70,8 +71,8 @@ struct TodayView: View {
         return SheetCard(padding: 0) {
             VStack(spacing: 0) {
                 ZStack(alignment: .topTrailing) {
-                    PlotScene(hour: hour, day: garden.today, beds: garden.book.beds, dates: garden.dates,
-                              rain: rainPhase, backdrop: Plates.exists(plateName) ? plateName : nil)
+                    LivingScene(day: garden.today, beds: garden.book.beds, dates: garden.dates,
+                                backdrop: Plates.exists(plateName) ? plateName : nil)
                         .frame(height: Loam.isPad ? 300 : 214)
                         .clipped()
                     HStack(spacing: 6) {
@@ -168,6 +169,99 @@ struct TodayView: View {
         pendingJob = job
     }
 
+    private var troubleCard: some View {
+        let event = garden.troubleToday
+        let growing = garden.plantedCells > 0
+        return SheetCard {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    HeadRule(text: "Trouble in the bed")
+                    if let ev = event, garden.troubleSolved(ev.id) { StampTag(text: "put right", tone: Loam.good) }
+                }
+                if let ev = event, let bed = garden.bed(ev.bedId) {
+                    let solved = garden.troubleSolved(ev.id)
+                    let trouble = Troubles.find(ev.trouble)
+                    HStack(alignment: .top, spacing: 12) {
+                        BedThumb(bed: bed, day: garden.today, troubleCell: solved ? nil : ev.cell, symptom: trouble.symptom).frame(width: 96, height: 50)
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text(solved ? "\(trouble.name) in \(bed.name), put right" : "Something is wrong in \(bed.name)")
+                                .font(Loam.title(15)).foregroundColor(Loam.ink).fixedSize(horizontal: false, vertical: true)
+                            Text(solved ? "\(trouble.remedy.title). \(trouble.prevention.split(separator: ".").first.map { String($0) + "." } ?? "")"
+                                        : "Square \(ev.cell % bed.cols + 1), row \(ev.cell / bed.cols + 1), the \(Register.find(ev.crop).plural.lowercased()): \(trouble.symptomWords). Open the bed, name it from three, and do the one thing the register asks.")
+                                .font(Loam.body(12.5)).foregroundColor(Loam.inkSoft).fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                    if solved {
+                        NavigationLink(destination: TroubleDetailView(trouble: trouble).environmentObject(garden)) {
+                            HStack(spacing: 6) {
+                                Text("Read the register page").font(Loam.title(12)).foregroundColor(Loam.terracotta)
+                                ChevGlyph(size: 11, color: Loam.terracotta, back: false)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                    } else {
+                        SowButton(title: "Open the bed", tone: Loam.terracotta) {
+                            garden.wantedBed = ev.bedId
+                            garden.wantedTab = 1
+                        }
+                    }
+                } else if growing {
+                    Text("The beds are quiet today. Most days of the growing season something turns up in a square: holes, curl, wilt, a bloom of mould. The register of twenty-four troubles in the Almanac says what each one is and what to do.")
+                        .font(Loam.body(13)).foregroundColor(Loam.inkSoft).fixedSize(horizontal: false, vertical: true)
+                } else {
+                    Text("Nothing is up yet, so nothing can go wrong. Once a square is sprouting, the troubles arrive on their own days, and each one is a small puzzle: name it from three, then pick, net, water, mulch or pull.")
+                        .font(Loam.body(13)).foregroundColor(Loam.inkSoft).fixedSize(horizontal: false, vertical: true)
+                }
+                HStack(spacing: 9) {
+                    CountTile(value: "\(garden.book.troublesCount ?? 0)", label: "put right", tone: Loam.leafDeep)
+                    CountTile(value: "\((garden.book.troublesSeen ?? []).count)/\(Troubles.all.count)", label: "kinds met")
+                    CountTile(value: garden.hasBadge("plantDoctor") ? "yes" : "\(max(0, 10 - (garden.book.troublesCount ?? 0)))", label: garden.hasBadge("plantDoctor") ? "plant doctor" : "to plant doctor", tone: Loam.prize)
+                }
+            }
+        }
+        .rising(2)
+    }
+
+    private var sayingCard: some View {
+        let saying = Sayings.ofDay(garden.today)
+        let read = garden.sayingRead(saying.id)
+        let tone: Color = saying.verdict == .truth ? Loam.good : (saying.verdict == .half ? Loam.warn : Loam.bad)
+        return SheetCard(padding: 0) {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(spacing: 0) {
+                    ThumbBox(name: Sayings.plate(saying.month), height: 92, corner: 0, side: 300).frame(width: 118)
+                    VStack(alignment: .leading, spacing: 4) {
+                        HeadRule(text: "Saying for \(saying.monthName)")
+                        Text(saying.text).font(Loam.note(14.5)).foregroundColor(Loam.ink).fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(10)
+                }
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 8) {
+                        StampTag(text: showSayingNote || read ? saying.verdict.name : "truth or myth", tone: showSayingNote || read ? tone : Loam.inkFaint)
+                        Spacer()
+                        Button(action: {
+                            Tap.light()
+                            withAnimation(.easeOut(duration: 0.2)) { showSayingNote.toggle() }
+                            garden.readSaying(saying.id)
+                        }) {
+                            Text(showSayingNote ? "Fold it away" : (read ? "Read it again" : "Weigh it")).font(Loam.title(12)).foregroundColor(Loam.terracotta)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    if showSayingNote {
+                        Text(saying.note).font(Loam.body(13)).foregroundColor(Loam.inkSoft).fixedSize(horizontal: false, vertical: true)
+                            .transition(.opacity)
+                    }
+                    Text("\((garden.book.sayingsRead ?? []).count) of \(Sayings.all.count) weighed; the whole year of them is in the Almanac.")
+                        .font(Loam.note(11.5)).foregroundColor(Loam.inkFaint)
+                }
+                .padding(.horizontal, 12).padding(.bottom, 12).padding(.top, 4)
+            }
+        }
+        .rising(3)
+    }
+
     private var noteCard: some View {
         let note = Notebook.note(for: garden.today, dates: garden.dates, rank: garden.rankIndex)
         let solved = garden.noteSolved(garden.today)
@@ -190,7 +284,7 @@ struct TodayView: View {
                 }
             }
         }
-        .rising(2)
+        .rising(4)
     }
 
     private var standingCard: some View {
@@ -223,7 +317,7 @@ struct TodayView: View {
                 NoticeBar(text: "Rank locks nothing. Each step only brings harder notes and longer plans.", tone: Loam.frostDeep)
             }
         }
-        .rising(3)
+        .rising(5)
     }
 
     private var frostCard: some View {
@@ -243,7 +337,7 @@ struct TodayView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
-        .rising(4)
+        .rising(6)
     }
 }
 

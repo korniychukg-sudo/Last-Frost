@@ -7,7 +7,7 @@ struct Term: Identifiable {
 }
 
 enum Glossary {
-    static let terms: [Term] = GlossaryA.list + GlossaryB.list + GlossaryC.list + GlossaryD.list + GlossaryE.list
+    static let terms: [Term] = GlossaryA.list + GlossaryB.list + GlossaryC.list + GlossaryD.list + GlossaryE.list + GlossaryF.list + GlossaryG.list
 
     static func find(_ name: String) -> Term? { terms.first { $0.term == name } }
 }
@@ -79,5 +79,30 @@ enum GlossaryE {
         Term(term: "Sets", means: "Small onion bulbs planted a month before the last frost to grow into full bulbs. Faster and surer than onion from seed, but more likely to bolt if planted large."),
         Term(term: "Slips", means: "Rooted shoots sprouted from a sweet potato tuber and set out into warm soil after the last frost. Sweet potatoes are grown from slips, never from seed."),
         Term(term: "Crown", means: "The perennial rootstock of rhubarb, asparagus or strawberry, planted in spring with the bud at soil level. Nothing is cut in the first year while the crown builds.")
+    ]
+}
+
+enum GlossaryF {
+    static let list: [Term] = [
+        Term(term: "Pricking out", means: "Moving seedlings from the crowded seed tray into their own cells or pots once the first true leaves show, held by a leaf and never by the stem. It gives each root room and is the step between sowing indoors and hardening off."),
+        Term(term: "Cotyledon", means: "The first pair of leaves a seedling unfolds, which were folded inside the seed. They are plain ovals whatever the crop; the first true leaf that follows has the shape of the plant, and that is the sign the seedling can be pricked out."),
+        Term(term: "Damping off", means: "A fungal collapse of seedlings at the soil line, in trays sown too thick, kept too wet and too warm in still air. Thin sowing, clean compost, watering from below and moving air prevent it; once a patch has gone it does not come back."),
+        Term(term: "Radiation frost", means: "The still, clear-sky night frost that does the damage in spring and autumn, when the ground gives its heat up to the sky with no cloud to hold it. Cold air pools in low beds first. Cloud or wind on a cold night usually means no frost."),
+        Term(term: "Fleece", means: "A light spun fabric laid over a bed or a row, which lets light and rain through, traps ground heat against a frost, and keeps flying pests off. Put on before sunset on a frost night, or from sowing against carrot fly and flea beetle."),
+        Term(term: "Integrated pest management", means: "The habit of managing pests by looking often, using barriers and timing first, hand-picking second, encouraging predators always, and accepting a little damage, rather than reaching for a spray that kills the predators with the pests."),
+        Term(term: "Honeydew", means: "The sweet sticky liquid aphids excrete onto the leaves below a colony, often blackened by a sooty mould that grows on it. Ants farm the aphids for it. Sticky, shining leaves are the first sign of aphids on the shoot above."),
+        Term(term: "Frass", means: "The droppings of a caterpillar or grub. Dark pellets on a leaf point up to a hornworm feeding above; moist sawdust at the base of a squash stem marks the hole where a vine borer went in.")
+    ]
+}
+
+enum GlossaryG {
+    static let list: [Term] = [
+        Term(term: "Sclerotia", means: "The hard black resting bodies of fungi such as white rot, small as poppy seed, which lie in the soil for fifteen years waiting for the next allium. They are why infected plants go in the bin and why the family is rotated so far."),
+        Term(term: "Phenology", means: "Reading the garden's season from the plants and animals rather than the calendar: sowing peas when the forsythia flowers, corn when oak leaves are the size of a squirrel's ear. It works because the same warmth drives both, in your own garden rather than on a map."),
+        Term(term: "Germination test", means: "Ten seeds on a damp paper towel in a sealed bag, kept warm for a week. Six sprouted is sixty percent, and the packet is sown twice as thick; under forty it is thrown out. Done in January before the seed order goes in."),
+        Term(term: "Viability", means: "The years a seed stays alive in the packet. Onion, leek and parsnip last one year; pea, pepper and corn two or three; bean and carrot three; brassica, tomato, lettuce and the cucurbits four to six, if kept cool, dry and dark."),
+        Term(term: "Top-dressing", means: "Feeding a growing crop by spreading compost, rotted manure or a pelleted feed on the surface around the plants and watering it in, rather than digging it into the bed. The answer to a hungry, yellowing brassica or corn in midsummer."),
+        Term(term: "Grow lamp", means: "A lamp hung a few inches above seed trays indoors to give the light a windowsill in February cannot. Seedlings without it stretch pale toward the window; under it they stay short and dark green until they are hardened off."),
+        Term(term: "Cell tray", means: "A seed tray divided into small cells, one seedling to each, so that the roots are never disturbed at pricking out or planting. The plot's indoor starts live in one, and a cell is tipped out whole when its square is ready.")
     ]
 }

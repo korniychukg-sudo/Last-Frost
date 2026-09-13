@@ -53,6 +53,24 @@ struct SeedTray: Codable, Identifiable, Equatable {
     var crop: String
     var sowDay: Int
     var hardenedDay: Int?
+    var prickedDay: Int?
+    var shelf: Int?
+
+    func seedlingHeight(on day: Int) -> Double {
+        let c = Register.find(crop)
+        let span = Double(max(14, (c.indoors?.lowerBound ?? 4) * 7))
+        return max(0, min(1, Double(day - sowDay) / span))
+    }
+
+    var pricked: Bool { prickedDay != nil }
+    var hardening: Bool { hardenedDay != nil }
+
+    func hardenDaysDone(on day: Int) -> Int {
+        guard let h = hardenedDay else { return 0 }
+        return max(0, min(7, day - h + 1))
+    }
+
+    func canPrick(on day: Int) -> Bool { !pricked && seedlingHeight(on: day) >= 0.35 }
 }
 
 struct LarderEntry: Codable, Identifiable, Equatable {
@@ -119,6 +137,14 @@ struct PlotBook: Codable {
     var uiSection: Int? = nil
     var uiLesson: String? = nil
     var uiScrub: Int? = nil
+    var troublesSolved: [String]? = nil
+    var troubleMisses: [String]? = nil
+    var troublesCount: Int? = nil
+    var sayingsRead: [String]? = nil
+    var hardenCount: Int? = nil
+    var prickCount: Int? = nil
+    var coverCount: Int? = nil
+    var troublesSeen: [String]? = nil
 }
 
 enum RotationVerdict: Int {
@@ -382,6 +408,12 @@ struct Badge: Identifiable {
         Badge(key: "fullRotation", name: "Full Rotation", text: "One bed has held three different families over three seasons."),
         Badge(key: "fourSeason", name: "Four-Season Plot", text: "Harvests logged in winter, spring, summer and autumn."),
         Badge(key: "examined", name: "Examined", text: "Passed the examination in the Book with four correct in five."),
-        Badge(key: "larderTwenty", name: "Full Shelves", text: "Twenty different crops on the larder shelves.")
+        Badge(key: "larderTwenty", name: "Full Shelves", text: "Twenty different crops on the larder shelves."),
+        Badge(key: "plantDoctor", name: "Plant Doctor", text: "Ten troubles in the beds identified and put right."),
+        Badge(key: "underLamp", name: "Under the Lamp", text: "A tray of seedlings pricked out into cells."),
+        Badge(key: "hardenedOff", name: "Hardened Off", text: "Five trays carried out to the doorstep and hardened off."),
+        Badge(key: "oldSaying", name: "Old Saying", text: "Twelve of the almanac's sayings read and weighed."),
+        Badge(key: "prizeTen", name: "Ten at Prize", text: "Ten larder slots at the Prize grade."),
+        Badge(key: "weatherEye", name: "Weather Eye", text: "The tender crops covered on three frost nights.")
     ]
 }

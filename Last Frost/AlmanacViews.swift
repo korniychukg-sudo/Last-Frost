@@ -7,6 +7,7 @@ struct AlmanacView: View {
     @State private var mode = 0
     @State private var openCrop: String? = nil
     @State private var restored = false
+    @State private var section = 0
 
     private var crops: [Crop] {
         Register.crops.filter { crop in
@@ -32,16 +33,25 @@ struct AlmanacView: View {
             Column {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Almanac").font(Loam.title(26)).foregroundColor(Loam.ink)
-                    Text("Sixty crops, every window counted from your frost on \(garden.dates.lastLabel) and \(garden.dates.firstLabel).")
+                    Text(section == 0 ? "Sixty crops, every window counted from your frost on \(garden.dates.lastLabel) and \(garden.dates.firstLabel)."
+                            : (section == 1 ? "Twenty-four troubles of the bed, drawn as you find them, with the one thing to do." : "Thirty-six old sayings, three to a month, weighed against the thermometer."))
                         .font(Loam.note(13)).foregroundColor(Loam.inkFaint).fixedSize(horizontal: false, vertical: true)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top, 8)
-                searchBar
-                BandPicker(titles: ["All", "Sowable now", "Fall sowings"], index: $mode)
-                familyStrip
-                familiesCard
-                grid
+                BandPicker(titles: ["Crops", "Troubles", "Sayings"], index: $section)
+                switch section {
+                case 1:
+                    TroublesSection().environmentObject(garden)
+                case 2:
+                    SayingsSection().environmentObject(garden)
+                default:
+                    searchBar
+                    BandPicker(titles: ["All", "Sowable now", "Fall sowings"], index: $mode)
+                    familyStrip
+                    familiesCard
+                    grid
+                }
             }
             .padding(.horizontal, Loam.gutter)
             .padding(.bottom, 28)

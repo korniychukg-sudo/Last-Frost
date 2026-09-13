@@ -160,9 +160,68 @@ final class FrostGarden: ObservableObject {
 
     func harden(_ trayId: String) {
         guard let i = book.trays.firstIndex(where: { $0.id == trayId }) else { return }
+        guard book.trays[i].hardenedDay == nil else { return }
         book.trays[i].hardenedDay = today
+        book.hardenCount = (book.hardenCount ?? 0) + 1
         markDone("harden-\(trayId)", points: 6)
+        if (book.hardenCount ?? 0) >= 5 { earn("hardenedOff") }
     }
+
+    func unharden(_ trayId: String) {
+        guard let i = book.trays.firstIndex(where: { $0.id == trayId }) else { return }
+        book.trays[i].hardenedDay = nil
+    }
+
+    func prickOut(_ trayId: String) {
+        guard let i = book.trays.firstIndex(where: { $0.id == trayId }), book.trays[i].prickedDay == nil else { return }
+        book.trays[i].prickedDay = today
+        book.prickCount = (book.prickCount ?? 0) + 1
+        award(7)
+        earn("underLamp")
+    }
+
+    func moveTray(_ trayId: String, shelf: Int) {
+        guard let i = book.trays.firstIndex(where: { $0.id == trayId }) else { return }
+        if book.trays[i].shelf != shelf { book.trays[i].shelf = shelf }
+    }
+
+    var troubleToday: TroubleEvent? { Troubles.event(for: today, book: book) }
+
+    func troubleSolved(_ id: String) -> Bool { (book.troublesSolved ?? []).contains(id) }
+
+    func troubleMissed(_ id: String) -> Bool { (book.troubleMisses ?? []).contains(id) }
+
+    func missTrouble(_ id: String) {
+        var misses = book.troubleMisses ?? []
+        if !misses.contains(id) { misses.append(id) }
+        if misses.count > 200 { misses.removeFirst(misses.count - 200) }
+        book.troubleMisses = misses
+    }
+
+    func solveTrouble(_ event: TroubleEvent) {
+        guard !troubleSolved(event.id) else { return }
+        var solved = book.troublesSolved ?? []
+        solved.append(event.id)
+        if solved.count > 400 { solved.removeFirst(solved.count - 400) }
+        book.troublesSolved = solved
+        var seen = book.troublesSeen ?? []
+        if !seen.contains(event.trouble) { seen.append(event.trouble) }
+        book.troublesSeen = seen
+        book.troublesCount = (book.troublesCount ?? 0) + 1
+        award(troubleMissed(event.id) ? 6 : 14)
+        if (book.troublesCount ?? 0) >= 10 { earn("plantDoctor") }
+    }
+
+    func readSaying(_ id: String) {
+        var read = book.sayingsRead ?? []
+        guard !read.contains(id) else { return }
+        read.append(id)
+        book.sayingsRead = read
+        award(2)
+        if read.count >= 12 { earn("oldSaying") }
+    }
+
+    func sayingRead(_ id: String) -> Bool { (book.sayingsRead ?? []).contains(id) }
 
     func water(_ bedId: String) {
         guard let i = bedIndex(bedId) else { return }
@@ -222,6 +281,7 @@ final class FrostGarden: ObservableObject {
         earn("firstHarvest")
         if seasons.count >= 4 { earn("fourSeason") }
         if book.larder.count >= 20 { earn("larderTwenty") }
+        if larderPrize >= 10 { earn("prizeTen") }
         return kept
     }
 
@@ -244,10 +304,14 @@ final class FrostGarden: ObservableObject {
 
     func cover(_ bedId: String) {
         var days = book.coveredDays ?? []
-        if !days.contains(today) { days.append(today) }
+        if !days.contains(today) {
+            days.append(today)
+            book.coverCount = (book.coverCount ?? 0) + 1
+        }
         if days.count > 60 { days.removeFirst(days.count - 60) }
         book.coveredDays = days
         markDone("cover-\(bedId)-\(today)", points: 8)
+        if (book.coverCount ?? 0) >= 3 { earn("weatherEye") }
     }
 
     func completeSimple(_ job: Job) {

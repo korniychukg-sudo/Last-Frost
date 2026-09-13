@@ -13,7 +13,7 @@ struct BookView: View {
             Column {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("The Book").font(Loam.title(26)).foregroundColor(Loam.ink)
-                    Text("Thirteen lessons, a glossary, an examination and the badges.")
+                    Text("Seventeen lessons, sixty terms, an examination and twelve badges.")
                         .font(Loam.note(13)).foregroundColor(Loam.inkFaint)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -88,7 +88,7 @@ struct BookView: View {
     private var glossary: some View {
         SheetCard {
             VStack(alignment: .leading, spacing: 4) {
-                HeadRule(text: "Forty-five terms", trailing: "\(garden.termsRead) read")
+                HeadRule(text: "Sixty terms", trailing: "\(garden.termsRead) read")
                 ForEach(Glossary.terms) { term in
                     Button(action: { Tap.light(); openTerm = term }) {
                         HStack(alignment: .top, spacing: 10) {
@@ -115,7 +115,7 @@ struct BookView: View {
             SheetCard {
                 VStack(alignment: .leading, spacing: 10) {
                     HeadRule(text: "The examination")
-                    Text("Thirty questions drawn from the register and the lessons: which crop goes in first, how many to a square, which family, when to sow relative to the frost, how many days to maturity. The questions about dates use your own frost dates.")
+                    Text("Thirty questions drawn from the registers and the lessons: which crop goes in first, how many to a square, which family, when to sow relative to the frost, how many days to maturity, which crop a trouble takes and what to do about it, and whether an old saying is truth or myth. The questions about dates use your own frost dates.")
                         .font(Loam.body(13.5)).foregroundColor(Loam.inkSoft).fixedSize(horizontal: false, vertical: true)
                     HStack(spacing: 9) {
                         CountTile(value: "\(garden.book.examBest ?? 0)", label: "best score", tone: Loam.prize)
@@ -202,7 +202,13 @@ struct BadgeMark: View {
                 case "fullRotation": BedGridMark(size: size * 0.6, color: tone)
                 case "fourSeason": SunBedMark(size: size * 0.6, color: tone)
                 case "examined": BookMark(size: size * 0.55, color: tone)
-                default: JarMark(size: size * 0.6, color: tone)
+                case "larderTwenty": JarMark(size: size * 0.6, color: tone)
+                case "plantDoctor": BugGlyph(size: size * 0.6, color: tone)
+                case "underLamp": LampGlyph(size: size * 0.6, color: tone)
+                case "hardenedOff": SproutGlyph(size: size * 0.55, color: tone)
+                case "oldSaying": QuoteGlyph(size: size * 0.55, color: tone)
+                case "prizeTen": StarGlyph(size: size * 0.55, color: tone)
+                default: FrostGlyph(size: size * 0.55, color: tone)
                 }
             }
         }

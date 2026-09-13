@@ -31,6 +31,12 @@
 		LFB00000000000000003022 /* SceneArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001022 /* SceneArt.swift */; };
 		LFB00000000000000003023 /* SettingsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001023 /* SettingsViews.swift */; };
 		LFB00000000000000003024 /* TodayViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001024 /* TodayViews.swift */; };
+		LFB00000000000000003025 /* SayingsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001025 /* SayingsData.swift */; };
+		LFB00000000000000003026 /* SceneLife.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001026 /* SceneLife.swift */; };
+		LFB00000000000000003027 /* TrayShelfView.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001027 /* TrayShelfView.swift */; };
+		LFB00000000000000003028 /* TroubleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001028 /* TroubleData.swift */; };
+		LFB00000000000000003029 /* TroubleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001029 /* TroubleModel.swift */; };
+		LFB00000000000000003030 /* TroubleViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000001030 /* TroubleViews.swift */; };
 		LFB00000000000000040001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000020001 /* Assets.xcassets */; };
 		LFB00000000000000040002 /* Art in Resources */ = {isa = PBXBuildFile; fileRef = LFA00000000000000020002 /* Art */; };
 /* End PBXBuildFile section */
@@ -60,6 +66,12 @@
 		LFA00000000000000001022 /* SceneArt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneArt.swift; sourceTree = "<group>"; };
 		LFA00000000000000001023 /* SettingsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViews.swift; sourceTree = "<group>"; };
 		LFA00000000000000001024 /* TodayViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViews.swift; sourceTree = "<group>"; };
+		LFA00000000000000001025 /* SayingsData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SayingsData.swift; sourceTree = "<group>"; };
+		LFA00000000000000001026 /* SceneLife.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneLife.swift; sourceTree = "<group>"; };
+		LFA00000000000000001027 /* TrayShelfView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrayShelfView.swift; sourceTree = "<group>"; };
+		LFA00000000000000001028 /* TroubleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TroubleData.swift; sourceTree = "<group>"; };
+		LFA00000000000000001029 /* TroubleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TroubleModel.swift; sourceTree = "<group>"; };
+		LFA00000000000000001030 /* TroubleViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TroubleViews.swift; sourceTree = "<group>"; };
 		LFA00000000000000020001 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		LFA00000000000000020002 /* Art */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Art; sourceTree = "<group>"; };
 		LFA00000000000000020090 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -104,6 +116,12 @@
 				LFA00000000000000001022 /* SceneArt.swift */,
 				LFA00000000000000001023 /* SettingsViews.swift */,
 				LFA00000000000000001024 /* TodayViews.swift */,
+				LFA00000000000000001025 /* SayingsData.swift */,
+				LFA00000000000000001026 /* SceneLife.swift */,
+				LFA00000000000000001027 /* TrayShelfView.swift */,
+				LFA00000000000000001028 /* TroubleData.swift */,
+				LFA00000000000000001029 /* TroubleModel.swift */,
+				LFA00000000000000001030 /* TroubleViews.swift */,
 				LFA00000000000000020001 /* Assets.xcassets */,
 				LFA00000000000000020002 /* Art */,
 				LFA00000000000000020090 /* Info.plist */,
@@ -213,6 +231,12 @@
 				LFB00000000000000003022 /* SceneArt.swift in Sources */,
 				LFB00000000000000003023 /* SettingsViews.swift in Sources */,
 				LFB00000000000000003024 /* TodayViews.swift in Sources */,
+				LFB00000000000000003025 /* SayingsData.swift in Sources */,
+				LFB00000000000000003026 /* SceneLife.swift in Sources */,
+				LFB00000000000000003027 /* TrayShelfView.swift in Sources */,
+				LFB00000000000000003028 /* TroubleData.swift in Sources */,
+				LFB00000000000000003029 /* TroubleModel.swift in Sources */,
+				LFB00000000000000003030 /* TroubleViews.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

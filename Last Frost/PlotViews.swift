@@ -6,6 +6,7 @@ struct PlotView: View {
     @State private var scrubDay: Int? = nil
     @State private var confirmRemove: Bed? = nil
     @State private var restored = false
+    @State private var openShelf = false
 
     var body: some View {
         ScrollView {
@@ -27,6 +28,7 @@ struct PlotView: View {
                     NavigationLink(destination: BedView(bedId: bed.id).environmentObject(garden),
                                    tag: bed.id, selection: $openBed) { EmptyView() }
                 }
+                NavigationLink(destination: TrayShelfView().environmentObject(garden), isActive: $openShelf) { EmptyView() }
             }
             .hidden()
         )
@@ -75,7 +77,8 @@ struct PlotView: View {
     private var mapCard: some View {
         SheetCard(padding: 0) {
             VStack(spacing: 0) {
-                PlotMapView(beds: garden.book.beds, day: viewDay, dates: garden.dates, projected: scrubDay != nil) { bedId in
+                PlotMapView(beds: garden.book.beds, day: viewDay, dates: garden.dates, projected: scrubDay != nil,
+                            trouble: garden.troubleToday.flatMap { garden.troubleSolved($0.id) ? nil : $0 }) { bedId in
                     Tap.light()
                     openBed = bedId
                 }
@@ -203,9 +206,26 @@ struct PlotView: View {
     private var traysCard: some View {
         SheetCard {
             VStack(alignment: .leading, spacing: 10) {
-                HeadRule(text: "Seed trays indoors", trailing: garden.book.trays.isEmpty ? nil : "\(garden.book.trays.count)")
+                HeadRule(text: "Seed trays under the lamp", trailing: garden.book.trays.isEmpty ? nil : "\(garden.book.trays.count)")
+                Button(action: { Tap.light(); openShelf = true }) {
+                    SheetCard(padding: 0) {
+                        HStack(spacing: 0) {
+                            ThumbBox(name: "ty_\(trayStage)", height: 84, corner: 0, side: 320).frame(width: 128)
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text("Open the shelf").font(Loam.title(14)).foregroundColor(Loam.ink)
+                                Text(garden.book.trays.isEmpty ? "A windowsill and two shelves under a grow lamp: sow, prick out, and harden off on the step."
+                                        : "\(garden.book.trays.count) \(garden.book.trays.count == 1 ? "tray" : "trays") growing by the real date; \(garden.book.trays.filter { $0.hardening }.count) on the doorstep.")
+                                    .font(Loam.body(11.5)).foregroundColor(Loam.inkFaint).fixedSize(horizontal: false, vertical: true)
+                            }
+                            .padding(10)
+                            Spacer(minLength: 0)
+                            ChevGlyph(size: 14, color: Loam.inkFaint, back: false).padding(.trailing, 10)
+                        }
+                    }
+                }
+                .buttonStyle(.plain)
                 if garden.book.trays.isEmpty {
-                    Text("Crops that start indoors live here until their window opens. Stake a tomato in a bed and the plan will offer to start a tray when the time comes, or start one from the Almanac.")
+                    Text("Crops that start indoors live here until their window opens. Stake a tomato in a bed and the plan will offer to start a tray when the time comes, or sow one on the shelf.")
                         .font(Loam.body(13)).foregroundColor(Loam.inkSoft)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -215,6 +235,16 @@ struct PlotView: View {
             }
         }
         .rising(3)
+    }
+}
+
+extension PlotView {
+    var trayStage: Int {
+        let trays = garden.book.trays
+        if trays.contains(where: { $0.hardening }) { return 3 }
+        if trays.contains(where: { $0.pricked }) { return 2 }
+        if trays.contains(where: { $0.seedlingHeight(on: garden.today) >= 0.2 }) { return 1 }
+        return 0
     }
 }
 
@@ -300,6 +330,7 @@ struct PlotMapView: View {
     var day: Int
     var dates: FrostDates
     var projected: Bool
+    var trouble: TroubleEvent? = nil
     var onTap: (String) -> Void
 
     var body: some View {
@@ -402,6 +433,11 @@ struct PlotMapView: View {
                     if stage == .mature && !ghost {
                         ctx.stroke(Path(roundedRect: cr.insetBy(dx: 1, dy: 1), cornerRadius: 2), with: .color(Loam.prize.opacity(0.8)), lineWidth: 1.2)
                     }
+                    if let ev = trouble, ev.bedId == bedId, ev.cell == i, !projected {
+                        var sym = SymptomPainter(ctx: ctx, symptom: Troubles.find(ev.trouble).symptom, rect: cr.insetBy(dx: cw * 0.08, dy: ch * 0.06), time: 0.7, seed: hashOf(ev.trouble))
+                        sym.draw()
+                        ctx.stroke(Path(roundedRect: cr.insetBy(dx: 1, dy: 1), cornerRadius: 2), with: .color(Loam.terracotta.opacity(0.9)), style: StrokeStyle(lineWidth: 1.2, dash: [3, 3]))
+                    }
                 } else if cell.stake != nil {
                     var stake = Path()
                     stake.move(to: CGPoint(x: cr.midX, y: cr.maxY - ch * 0.2))
@@ -437,6 +473,8 @@ struct PlotMapView: View {
 struct BedThumb: View {
     var bed: Bed
     var day: Int
+    var troubleCell: Int? = nil
+    var symptom: Symptom? = nil
     var body: some View {
         Canvas { ctx, size in
             ctx.fill(Path(roundedRect: CGRect(origin: .zero, size: size), cornerRadius: 3), with: .color(Loam.soil))
@@ -450,6 +488,11 @@ struct BedThumb: View {
                     var painter = PlantPainter(ctx, crop: Register.find(p.crop), stage: stage, growth: p.growth(on: day),
                                                rect: cr.insetBy(dx: 1, dy: 1), detail: false, seed: hashOf(bed.id + "\(i)"))
                     painter.draw()
+                    if troubleCell == i, let sym = symptom {
+                        var painterS = SymptomPainter(ctx: ctx, symptom: sym, rect: cr.insetBy(dx: 1, dy: 1), time: 0.7, seed: hashOf(sym.rawValue))
+                        painterS.draw()
+                        ctx.stroke(Path(cr.insetBy(dx: 0.5, dy: 0.5)), with: .color(Loam.terracotta), lineWidth: 1.2)
+                    }
                 } else if cell.stake != nil {
                     ctx.fill(Path(CGRect(x: cr.midX - 1, y: cr.minY + 3, width: 2, height: ch - 6)), with: .color(Loam.strawPale))
                 }

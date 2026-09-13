@@ -129,7 +129,7 @@ enum Examiner {
         var guardCount = 0
         while out.count < count && guardCount < count * 8 {
             guardCount += 1
-            let kind = rng.step(0, 5)
+            let kind = rng.step(0, 9)
             let q: ExamQuestion?
             switch kind {
             case 0: q = whichFirst(&rng, out.count)
@@ -137,6 +137,10 @@ enum Examiner {
             case 2: q = family(&rng, out.count)
             case 3: q = whenToSow(&rng, out.count, dates)
             case 4: q = maturity(&rng, out.count)
+            case 5: q = troubleCrop(&rng, out.count)
+            case 6: q = troubleAction(&rng, out.count)
+            case 7: q = troubleKind(&rng, out.count)
+            case 8: q = sayingVerdict(&rng, out.count)
             default: q = authored(&rng, out.count)
             }
             guard let question = q, !used.contains(question.prompt) else { continue }
@@ -356,7 +360,85 @@ enum Examiner {
          "Straw, leaf mould or compost on the surface stops evaporation and keeps blossom-end rot away from the tomatoes.")
     ]
 
-    static var authoredAll: [(String, [String], Int, String)] { authoredA + authoredB + authoredC }
+    static let authoredD: [(String, [String], Int, String)] = [
+        ("Why does a spray for aphids usually make the aphids worse a fortnight later?",
+         ["It kills the ladybirds and hoverfly larvae that were eating them", "It feeds the plant", "Aphids like the smell", "It warms the leaves"], 0,
+         "The predators breed slower than the aphids, so a garden with no predators is recolonised by aphids first. Squash them by hand and leave the ladybirds."),
+        ("A vine of zucchini wilts suddenly and there is sawdust at the base of the stem. What is inside?",
+         ["A squash vine borer grub", "A slug", "A wireworm", "Nothing; it needs water"], 0,
+         "The moist frass at the base marks the hole. Slit the stem, pick out the grub and bury the stem to root again."),
+        ("What does a black, sunken patch on the bottom of a tomato mean?",
+         ["Uneven watering; the calcium could not reach the fruit", "Blight from the potatoes", "Too much sun", "A caterpillar inside"], 0,
+         "Blossom-end rot is a disorder, not a disease. Even watering and a mulch cure the next truss; nothing needs spraying."),
+        ("A cabbage wilts in the afternoon sun and its root is a swollen club. How long does the bed stay off brassicas?",
+         ["As long as the plan allows, seven years if possible", "One season", "A month", "Until the next rain"], 0,
+         "Clubroot spores persist for years. Lime the bed toward pH 7.2 and keep the family away from it."),
+        ("Which of these keeps carrot fly off a row?",
+         ["A fine mesh barrier two feet high", "A spray of soap", "Sowing thickly and thinning often", "Watering in the evening"], 0,
+         "The fly hunts low and by smell. A barrier stops it; thinning releases the smell that draws it."),
+        ("Ten seeds on a damp towel sprouted four. What do you do with the packet?",
+         ["Throw it away; under forty percent is not worth sowing", "Sow it at the usual rate", "Sow it half as thick", "Keep it another year"], 0,
+         "Forty percent germination gives a patchy drill even sown thick. Buy fresh seed and write the year on it."),
+        ("A saying that is true for zone 6 and a calendar date everywhere else:",
+         ["Plant peas on St Patrick's Day", "April showers bring May flowers", "Frost sweetens the parsnip", "Red sky at night, gardener's delight"], 0,
+         "March 17 is inside the pea window only where the last frost is around April 1. The almanac counts the window for every zone instead."),
+        ("On a clear, still, dry evening near the frost date, what do you do before sunset?",
+         ["Cover the tender crops and water the bed", "Nothing; clear skies mean warmth", "Prune the tomatoes", "Turn the compost"], 0,
+         "A radiation frost comes on a clear still night. A cover put on before sunset traps the ground's heat, and wet soil holds more of it.")
+    ]
+
+    static var authoredAll: [(String, [String], Int, String)] { authoredA + authoredB + authoredC + authoredD }
+
+    static func troubleCrop(_ rng: inout Furrow, _ id: Int) -> ExamQuestion? {
+        let t = rng.pick(Troubles.all)
+        let victim = Register.find(rng.pick(t.crops))
+        let others = Register.crops.filter { !t.crops.contains($0.key) }
+        var options = [victim.name]
+        var tries = 0
+        while options.count < 4 && tries < 40 {
+            let c = rng.pick(others)
+            if !options.contains(c.name) { options.append(c.name) }
+            tries += 1
+        }
+        guard options.count == 4 else { return nil }
+        options = rng.shuffled(options)
+        let answer = options.firstIndex(of: victim.name) ?? 0
+        return ExamQuestion(id: id, prompt: "Which of these crops suffers from \(t.name.lowercased())?",
+                            options: options, answer: answer,
+                            explanation: "\(t.name) is a \(t.kind.name.lowercased()) of \(t.cropNames), seen \(t.season). The sign is \(t.symptomWords).")
+    }
+
+    static func troubleAction(_ rng: inout Furrow, _ id: Int) -> ExamQuestion? {
+        let t = rng.pick(Troubles.all)
+        let remedies: [Remedy] = [.pickOff, .net, .waterBase, .mulch, .pull]
+        var options = [t.remedy.title]
+        for r in rng.shuffled(remedies) where options.count < 4 && !options.contains(r.title) { options.append(r.title) }
+        options = rng.shuffled(options)
+        let answer = options.firstIndex(of: t.remedy.title) ?? 0
+        return ExamQuestion(id: id, prompt: "The bed shows \(t.symptomWords), and it is \(t.name.lowercased()). What is the first thing to do?",
+                            options: options, answer: answer,
+                            explanation: String(t.action.split(separator: ".").first.map { $0 + "." } ?? t.action))
+    }
+
+    static func troubleKind(_ rng: inout Furrow, _ id: Int) -> ExamQuestion? {
+        let t = rng.pick(Troubles.all)
+        let kinds: [TroubleKind] = [.pest, .disease, .disorder]
+        let options = kinds.map { "A \($0.name.lowercased())" }
+        let answer = kinds.firstIndex(of: t.kind) ?? 0
+        return ExamQuestion(id: id, prompt: "\(t.name): is it a pest, a disease or a disorder?",
+                            options: options, answer: answer,
+                            explanation: "\(t.name) is a \(t.kind.name.lowercased()). \(t.kind.meaning)")
+    }
+
+    static func sayingVerdict(_ rng: inout Furrow, _ id: Int) -> ExamQuestion? {
+        let saying = rng.pick(Sayings.all)
+        let verdicts: [SayingVerdict] = [.truth, .half, .myth]
+        let options = verdicts.map { $0.name }
+        let answer = verdicts.firstIndex(of: saying.verdict) ?? 0
+        return ExamQuestion(id: id, prompt: "The old saying goes: \(saying.text) Truth, half-truth or myth?",
+                            options: options, answer: answer,
+                            explanation: saying.note)
+    }
 
     static func authored(_ rng: inout Furrow, _ id: Int) -> ExamQuestion? {
         let q = rng.pick(authoredAll)

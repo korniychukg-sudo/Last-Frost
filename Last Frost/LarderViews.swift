@@ -35,7 +35,7 @@ struct LarderView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Larder").font(Loam.title(26)).foregroundColor(Loam.ink)
-            Text("One slot for every crop. A better pull replaces a poorer one; nothing is ever locked.")
+            Text("One slot for every crop, each with its own crate, jar or basket once it is filled. A better pull replaces a poorer one; nothing is ever locked.")
                 .font(Loam.note(13)).foregroundColor(Loam.inkFaint).fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -161,6 +161,37 @@ struct ShelfRow: View {
         let jarCrop = [PlantForm.fruitBush, .vine, .herb, .flower, .runner, .bush, .head, .leafy].contains(crop.form)
         let bodyH: CGFloat = 62
         let top = baseY - bodyH
+        if let e = entry, let image = Plates.thumb("pr_" + crop.key, side: 260) {
+            let slot = CGRect(x: cx - width * 0.5, y: top - 6, width: width, height: bodyH + 4)
+            ctx.fill(Path(roundedRect: slot.offsetBy(dx: 2, dy: 3), cornerRadius: 5), with: .color(Loam.ink.opacity(0.18)))
+            var sub = ctx
+            sub.clip(to: Path(roundedRect: slot, cornerRadius: 5))
+            let iw = image.size.width, ih = image.size.height
+            let scale = max(slot.width / iw, slot.height / ih) * 1.18
+            let dw = iw * scale, dh = ih * scale
+            sub.draw(Image(uiImage: image), in: CGRect(x: slot.midX - dw / 2, y: slot.midY - dh / 2 + slot.height * 0.02, width: dw, height: dh))
+            ctx.stroke(Path(roundedRect: slot, cornerRadius: 5), with: .color(Loam.ink.opacity(0.55)), lineWidth: 1)
+            let ribbon: Color = e.quality == 2 ? Loam.prize : (e.quality == 1 ? Loam.good : Loam.inkFaint)
+            ctx.fill(Path(ellipseIn: CGRect(x: slot.maxX - 15, y: slot.minY + 3, width: 12, height: 12)), with: .color(ribbon))
+            ctx.stroke(Path(ellipseIn: CGRect(x: slot.maxX - 15, y: slot.minY + 3, width: 12, height: 12)), with: .color(Loam.card), lineWidth: 1.2)
+            if e.count > 1 {
+                ctx.draw(Text("\(e.count)").font(Loam.title(8)).foregroundColor(Loam.card), at: CGPoint(x: slot.maxX - 9, y: slot.minY + 9))
+            }
+            let stampText = "\(Almanac.seasonNames[Almanac.season(of: e.day)].prefix(3).uppercased()) \(String(Almanac.year(of: e.day)).suffix(2))"
+            let stampW: CGFloat = 40, stampH: CGFloat = 12
+            var stampCtx = ctx
+            stampCtx.translateBy(x: slot.minX + 4 + stampW / 2, y: slot.maxY - 9)
+            stampCtx.rotate(by: .degrees(-6))
+            let stampRect = CGRect(x: -stampW / 2, y: -stampH / 2, width: stampW, height: stampH)
+            stampCtx.fill(Path(roundedRect: stampRect, cornerRadius: 2), with: .color(Loam.card.opacity(0.85)))
+            stampCtx.stroke(Path(roundedRect: stampRect, cornerRadius: 2), with: .color(Loam.terracotta.opacity(0.9)), lineWidth: 0.9)
+            stampCtx.draw(Text(stampText).font(Loam.title(6.5)).foregroundColor(Loam.terracotta), at: .zero)
+            let tag = CGRect(x: cx - width * 0.36, y: baseY + 20, width: width * 0.72, height: 15)
+            ctx.fill(Path(roundedRect: tag, cornerRadius: 2), with: .color(Loam.card))
+            ctx.stroke(Path(roundedRect: tag, cornerRadius: 2), with: .color(Loam.ink.opacity(0.45)), lineWidth: 0.7)
+            ctx.draw(Text(crop.name).font(Loam.note(9.5)).foregroundColor(Loam.ink), at: CGPoint(x: tag.midX, y: tag.midY))
+            return
+        }
         if let e = entry {
             let tones = PlantPalette.tones(for: crop)
             let fill = tones.fruit == .clear ? tones.leaf : tones.fruit
@@ -212,6 +243,10 @@ struct ShelfRow: View {
             sub.opacity = 0.28
             var painter = PlantPainter(sub, crop: crop, stage: .mature, growth: 1, rect: CGRect(x: cx - width * 0.26, y: top + 16, width: width * 0.52, height: bodyH - 24), detail: false, seed: hashOf(crop.key))
             painter.draw()
+            let tag = CGRect(x: cx - width * 0.36, y: baseY + 20, width: width * 0.72, height: 15)
+            ctx.stroke(Path(roundedRect: tag, cornerRadius: 2), with: .color(Loam.ink.opacity(0.25)), style: StrokeStyle(lineWidth: 0.7, dash: [2, 2]))
+            ctx.draw(Text(crop.name).font(Loam.note(9.5)).foregroundColor(Loam.inkFaint), at: CGPoint(x: tag.midX, y: tag.midY))
+            return
         }
         ctx.draw(Text(crop.name).font(Loam.body(9.5)).foregroundColor(entry == nil ? Loam.inkFaint : Loam.ink), at: CGPoint(x: cx, y: baseY + 28))
     }
@@ -229,8 +264,13 @@ struct SlotSheet: View {
             ScrollView {
                 Column {
                     SheetCard(padding: 6) {
-                        PlateBox(name: crop.plate, height: Loam.isPad ? 520 : 380, fit: true)
+                        PlateBox(name: entry != nil && Plates.exists("pr_" + crop.key) ? "pr_" + crop.key : crop.plate, height: Loam.isPad ? 520 : 380, fit: true)
                             .opacity(entry == nil ? 0.55 : 1)
+                    }
+                    if entry != nil {
+                        SheetCard(padding: 6) {
+                            PlateBox(name: crop.plate, height: Loam.isPad ? 420 : 300, fit: true)
+                        }
                     }
                     if let e = entry {
                         SheetCard {

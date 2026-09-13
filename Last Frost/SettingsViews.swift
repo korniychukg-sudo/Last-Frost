@@ -99,7 +99,7 @@ struct SettingsView: View {
         SheetCard {
             VStack(alignment: .leading, spacing: 9) {
                 HeadRule(text: "About Last Frost")
-                Text("A vegetable garden planner that counts every sowing, transplant and harvest from your two frost dates. Sixty crops with real numbers, beds of square-foot cells that grow on the real calendar, jobs on the days they fall, a larder of what you pulled, and a book of twelve lessons.")
+                Text("A vegetable garden planner that counts every sowing, transplant and harvest from your two frost dates. Sixty crops with real numbers, twenty-four troubles of the bed, thirty-six old sayings weighed, beds of square-foot cells that grow on the real calendar, seed trays under a lamp, jobs on the days they fall, a larder of what you pulled, and a book of seventeen lessons.")
                     .font(Loam.body(13)).foregroundColor(Loam.inkSoft)
                     .fixedSize(horizontal: false, vertical: true)
                 Text("Everything runs on the device. No account, no network, no notifications. The numbers are the usual seed-packet and extension-service figures for a temperate garden; your own garden will run a week or two either side of them.")
@@ -107,6 +107,7 @@ struct SettingsView: View {
                     .fixedSize(horizontal: false, vertical: true)
                 HStack(spacing: 9) {
                     CountTile(value: "\(Register.crops.count)", label: "crops")
+                    CountTile(value: "\(Troubles.all.count)", label: "troubles")
                     CountTile(value: "\(Lessons.all.count)", label: "lessons")
                     CountTile(value: "\(Glossary.terms.count)", label: "terms")
                     CountTile(value: "1.0", label: "version")

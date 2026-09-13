@@ -403,3 +403,80 @@ struct StarGlyph: View {
         .frame(width: size, height: size)
     }
 }
+
+struct BugGlyph: View {
+    var size: CGFloat
+    var color: Color
+    var body: some View {
+        Canvas { ctx, area in
+            let w = area.width, h = area.height
+            var leaf = Path()
+            leaf.move(to: CGPoint(x: w * 0.1, y: h * 0.85))
+            leaf.addQuadCurve(to: CGPoint(x: w * 0.9, y: h * 0.15), control: CGPoint(x: w * 0.15, y: h * 0.1))
+            leaf.addQuadCurve(to: CGPoint(x: w * 0.1, y: h * 0.85), control: CGPoint(x: w * 0.9, y: h * 0.9))
+            ctx.stroke(leaf, with: .color(color), lineWidth: max(1, size * 0.07))
+            var vein = Path()
+            vein.move(to: CGPoint(x: w * 0.15, y: h * 0.8))
+            vein.addLine(to: CGPoint(x: w * 0.8, y: h * 0.22))
+            ctx.stroke(vein, with: .color(color), lineWidth: max(0.8, size * 0.045))
+            for c in [CGPoint(x: w * 0.42, y: h * 0.38), CGPoint(x: w * 0.6, y: h * 0.62)] {
+                ctx.fill(Path(ellipseIn: CGRect(x: c.x - size * 0.09, y: c.y - size * 0.09, width: size * 0.18, height: size * 0.18)), with: .color(color))
+            }
+        }
+        .frame(width: size, height: size)
+    }
+}
+
+struct LampGlyph: View {
+    var size: CGFloat
+    var color: Color
+    var body: some View {
+        Canvas { ctx, area in
+            let w = area.width, h = area.height
+            var hood = Path()
+            hood.move(to: CGPoint(x: w * 0.2, y: h * 0.4))
+            hood.addLine(to: CGPoint(x: w * 0.8, y: h * 0.4))
+            hood.addLine(to: CGPoint(x: w * 0.7, y: h * 0.2))
+            hood.addLine(to: CGPoint(x: w * 0.3, y: h * 0.2))
+            hood.closeSubpath()
+            ctx.fill(hood, with: .color(color))
+            var cord = Path()
+            cord.move(to: CGPoint(x: w * 0.5, y: h * 0.05))
+            cord.addLine(to: CGPoint(x: w * 0.5, y: h * 0.2))
+            ctx.stroke(cord, with: .color(color), lineWidth: max(1, size * 0.06))
+            var rays = Path()
+            for k in 0..<3 {
+                let x = w * (0.32 + CGFloat(k) * 0.18)
+                rays.move(to: CGPoint(x: x, y: h * 0.5))
+                rays.addLine(to: CGPoint(x: x + CGFloat(k - 1) * w * 0.08, y: h * 0.72))
+            }
+            ctx.stroke(rays, with: .color(color), style: StrokeStyle(lineWidth: max(0.8, size * 0.05), lineCap: .round))
+            var sprout = Path()
+            sprout.move(to: CGPoint(x: w * 0.5, y: h * 0.95))
+            sprout.addLine(to: CGPoint(x: w * 0.5, y: h * 0.78))
+            ctx.stroke(sprout, with: .color(color), lineWidth: max(0.8, size * 0.05))
+            ctx.fill(Path(ellipseIn: CGRect(x: w * 0.36, y: h * 0.74, width: w * 0.14, height: h * 0.08)), with: .color(color))
+            ctx.fill(Path(ellipseIn: CGRect(x: w * 0.5, y: h * 0.74, width: w * 0.14, height: h * 0.08)), with: .color(color))
+        }
+        .frame(width: size, height: size)
+    }
+}
+
+struct QuoteGlyph: View {
+    var size: CGFloat
+    var color: Color
+    var body: some View {
+        Canvas { ctx, area in
+            let w = area.width, h = area.height
+            for k in 0..<2 {
+                let x = w * (0.22 + CGFloat(k) * 0.4)
+                ctx.fill(Path(ellipseIn: CGRect(x: x, y: h * 0.3, width: w * 0.2, height: w * 0.2)), with: .color(color))
+                var tail = Path()
+                tail.move(to: CGPoint(x: x + w * 0.2, y: h * 0.42))
+                tail.addQuadCurve(to: CGPoint(x: x + w * 0.05, y: h * 0.68), control: CGPoint(x: x + w * 0.2, y: h * 0.62))
+                ctx.stroke(tail, with: .color(color), style: StrokeStyle(lineWidth: max(1, size * 0.06), lineCap: .round))
+            }
+        }
+        .frame(width: size, height: size)
+    }
+}

@@ -23,6 +23,8 @@ enum Loam {
     static let warn = Color(red: 0.706, green: 0.502, blue: 0.180)
     static let bad = Color(red: 0.639, green: 0.212, blue: 0.161)
     static let prize = Color(red: 0.741, green: 0.588, blue: 0.235)
+    static let wood = Color(red: 0.500, green: 0.400, blue: 0.280)
+    static let woodDark = Color(red: 0.330, green: 0.250, blue: 0.170)
 
     static func title(_ size: CGFloat) -> Font { .custom("Baskerville-Bold", size: size) }
     static func body(_ size: CGFloat) -> Font { .custom("Baskerville", size: size) }

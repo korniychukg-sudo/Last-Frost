@@ -53,9 +53,15 @@ struct BedView: View {
     @State private var confirmClear = false
     @State private var wateredFlash: Int? = nil
     @State private var tick = 0
+    @State private var openTrouble = false
     private let clock = Timer.publish(every: 0.05, on: .main, in: .common).autoconnect()
 
     private var bed: Bed { garden.bed(bedId) ?? Bed.make("missing", name: "Bed") }
+
+    private var troubleHere: TroubleEvent? {
+        guard let ev = garden.troubleToday, ev.bedId == bedId, ev.cell < bed.cells.count, bed.cells[ev.cell].planting != nil else { return nil }
+        return ev
+    }
 
     var body: some View {
         ZStack {
@@ -94,6 +100,11 @@ struct BedView: View {
         }
         .sheet(isPresented: $renaming) {
             RenameSheet(name: $newName) { garden.renameBed(bedId, newName); renaming = false }
+        }
+        .sheet(isPresented: $openTrouble) {
+            if let ev = troubleHere ?? garden.troubleToday {
+                TroubleSheet(event: ev, bedName: bed.name) { openTrouble = false }.environmentObject(garden)
+            }
         }
         .alert(isPresented: $confirmClear) {
             Alert(title: Text("Clear this square?"), message: Text("The plant is composted and the square returns to bare soil."),
@@ -134,7 +145,8 @@ struct BedView: View {
         SheetCard(padding: 8) {
             VStack(spacing: 6) {
                 GeometryReader { geo in
-                    BedGridCanvas(bed: bed, day: garden.today, selected: selected, press: press, covering: covering, tool: tool, tick: tick)
+                    BedGridCanvas(bed: bed, day: garden.today, selected: selected, press: press, covering: covering, tool: tool, tick: tick,
+                                  trouble: troubleHere, troubleSolved: troubleHere.map { garden.troubleSolved($0.id) } ?? false)
                         .background(GeometryReader { g in
                             Color.clear.preference(key: GridFrameKey.self, value: g.frame(in: .named("bed")))
                         })
@@ -166,6 +178,9 @@ struct BedView: View {
             }
         }
         if tool == .water { return "The can is in hand. Drag across the squares to water them." }
+        if let ev = troubleHere, !garden.troubleSolved(ev.id), selected != ev.cell {
+            return "Something is wrong in square \(ev.cell % bed.cols + 1), row \(ev.cell / bed.cols + 1). Tap it and name the trouble."
+        }
         if let s = selected, s < bed.cells.count {
             let cell = bed.cells[s]
             if let p = cell.planting {
@@ -425,6 +440,9 @@ struct BedView: View {
                             HeadRule(text: "Square \(s % bed.cols + 1), row \(s / bed.cols + 1)")
                             Button(action: { Tap.light(); withAnimation { selected = nil } }) { CrossGlyph(size: 12, color: Loam.inkFaint) }.buttonStyle(.plain)
                         }
+                        if let ev = troubleHere, ev.cell == s {
+                            troubleInfo(ev)
+                        }
                         if let p = cell.planting {
                             plantingInfo(p, cell: s)
                         } else if let stake = cell.stake {
@@ -436,6 +454,26 @@ struct BedView: View {
                     }
                 }
             }
+        }
+    }
+
+    private func troubleInfo(_ ev: TroubleEvent) -> some View {
+        let solved = garden.troubleSolved(ev.id)
+        let trouble = Troubles.find(ev.trouble)
+        return VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .top, spacing: 12) {
+                SymptomGlyph(crop: Register.find(ev.crop), symptom: trouble.symptom, size: 56)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(solved ? "\(trouble.name), put right" : "Trouble in this square").font(Loam.title(15)).foregroundColor(solved ? Loam.good : Loam.terracotta)
+                    Text(solved ? "\(trouble.remedy.title) done today. Watch the neighbours; it comes back in its season."
+                                : "The \(Register.find(ev.crop).plural.lowercased()) show \(trouble.symptomWords). Name it from three candidates, then do what the register says.")
+                        .font(Loam.body(12.5)).foregroundColor(Loam.inkSoft).fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            if !solved {
+                SowButton(title: "Name it", tone: Loam.terracotta) { openTrouble = true }
+            }
+            Rectangle().fill(Loam.ink.opacity(0.08)).frame(height: 0.7)
         }
     }
 
@@ -666,6 +704,8 @@ struct BedGridCanvas: View {
     var covering: Int?
     var tool: BedTool
     var tick: Int
+    var trouble: TroubleEvent? = nil
+    var troubleSolved: Bool = false
 
     var body: some View {
         Canvas { ctx, size in
@@ -697,6 +737,11 @@ struct BedGridCanvas: View {
                                                    rect: rect.insetBy(dx: cw * 0.08, dy: ch * 0.06).offsetBy(dx: 0, dy: -lift), detail: true,
                                                    seed: hashOf(bed.id + "\(i)"))
                         painter.draw()
+                        if let ev = trouble, ev.cell == i, !troubleSolved {
+                            var sym = SymptomPainter(ctx: ctx, symptom: Troubles.find(ev.trouble).symptom, rect: rect.insetBy(dx: cw * 0.08, dy: ch * 0.06).offsetBy(dx: 0, dy: -lift), time: 0.7, seed: hashOf(ev.trouble))
+                            sym.draw()
+                            ctx.stroke(Path(roundedRect: rect.insetBy(dx: 2, dy: 2), cornerRadius: 4), with: .color(Loam.terracotta.opacity(0.9)), style: StrokeStyle(lineWidth: 1.6, dash: [5, 4]))
+                        }
                         if lift > 0 {
                             var roots = Path()
                             roots.move(to: CGPoint(x: rect.midX, y: rect.maxY - ch * 0.12 - lift))

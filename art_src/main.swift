@@ -59,8 +59,9 @@ if job == "probe" {
     let contactDir = args.count > 4 ? args[4] : outDir
     let files = ((try? FileManager.default.contentsOfDirectory(atPath: outDir)) ?? []).filter { $0.hasPrefix(prefix) && $0.hasSuffix(".jpg") }.sorted()
     let names = files.map { String($0.dropLast(4)) }
-    let portrait = prefix == "cr_"
-    contactSheet(names: names, labels: names, columns: portrait ? 4 : 3, tile: portrait ? 420 : 520, aspect: portrait ? 1.333 : 0.75, out: contactDir, file: "contact_probe_" + prefix.replacingOccurrences(of: "_", with: ""))
+    let portrait = prefix == "cr_" || prefix == "tr_"
+    let square = prefix == "pr_"
+    contactSheet(names: names, labels: names, columns: square ? 6 : (portrait ? 4 : 3), tile: square ? 300 : (portrait ? 420 : 520), aspect: square ? 1.0 : (portrait ? 1.333 : 0.75), out: contactDir, file: "contact_probe_" + prefix.replacingOccurrences(of: "_", with: ""))
     note("probe sheet written")
     exit(0)
 }
@@ -121,6 +122,40 @@ if wants("scenes") {
         }
     }
     note("scenes done: \(made)")
+}
+
+if wants("troubles") {
+    let only = extra
+    for t in Troubles.all where only.isEmpty || only.split(separator: ",").map(String.init).contains(t.key) {
+        drawTroublePlate(t, dir: outDir)
+        made += 1
+    }
+    note("troubles done: \(made)")
+}
+
+if wants("produce") {
+    let only = extra
+    for crop in Register.crops where only.isEmpty || only.split(separator: ",").map(String.init).contains(crop.key) {
+        drawProducePlate(crop, dir: outDir)
+        made += 1
+    }
+    note("produce done: \(made)")
+}
+
+if wants("extra") {
+    for i in 0..<extraLessonKeys.count {
+        drawExtraLessonPlate(i, dir: outDir)
+        made += 1
+    }
+    for k in 0..<4 {
+        drawTrayPlate(k, dir: outDir)
+        made += 1
+    }
+    for m in 1...12 {
+        drawMonthPlate(m, dir: outDir)
+        made += 1
+    }
+    note("extra done: \(made)")
 }
 
 if wants("misc") {
